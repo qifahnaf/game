@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Crossword Hewan</title>
+<title>Game Tebak Hewan</title>
 <style>
 body {
     font-family: Arial;
@@ -14,84 +14,80 @@ h1 {
     color: #333;
 }
 
-.grid {
-    display: grid;
-    grid-template-columns: repeat(6, 50px);
-    gap: 5px;
-    justify-content: center;
+.word {
+    font-size: 30px;
+    letter-spacing: 10px;
     margin: 20px;
 }
 
 input {
-    width: 50px;
-    height: 50px;
-    text-align: center;
+    padding: 10px;
     font-size: 20px;
-    text-transform: uppercase;
+    text-align: center;
 }
 
 button {
     padding: 10px 20px;
+    margin-top: 10px;
     font-size: 16px;
-    margin-top: 20px;
     cursor: pointer;
 }
 
 .correct {
-    background: #90ee90;
+    color: green;
 }
 
 .wrong {
-    background: #ffcccb;
+    color: red;
 }
 </style>
 </head>
 <body>
 
-<h1>🐾 Crossword Hewan</h1>
+<h1>🐾 Tebak Nama Hewan</h1>
 
-<p>Isi nama hewan di bawah ini:</p>
+<p>Susun huruf acak menjadi nama hewan!</p>
 
-<div class="grid" id="grid"></div>
+<div class="word" id="scrambled"></div>
 
-<button onclick="checkAnswer()">Cek Jawaban</button>
+<input type="text" id="answer" placeholder="Jawaban...">
+<br>
+<button onclick="checkAnswer()">Cek</button>
+
+<p id="result"></p>
 
 <script>
-const answers = [
-  "KUCING",
-  "ANJING",
-  "SINGA",
-  "GAJAH",
-  "IKAN",
-  "ULAR"
-];
+const words = ["KUCING", "ANJING", "SINGA", "GAJAH", "ULAR", "IKAN"];
 
-const grid = document.getElementById("grid");
+let currentWord = "";
+let scrambledWord = "";
 
-// buat kotak input
-answers.forEach((word, i) => {
-  for (let j = 0; j < word.length; j++) {
-    let input = document.createElement("input");
-    input.id = "cell-" + i + "-" + j;
-    grid.appendChild(input);
-  }
-});
-
-// cek jawaban
-function checkAnswer() {
-  answers.forEach((word, i) => {
-    for (let j = 0; j < word.length; j++) {
-      let input = document.getElementById("cell-" + i + "-" + j);
-      if (input.value.toUpperCase() === word[j]) {
-        input.classList.add("correct");
-        input.classList.remove("wrong");
-      } else {
-        input.classList.add("wrong");
-        input.classList.remove("correct");
-      }
-    }
-  });
+function scramble(word) {
+    return word.split('').sort(() => Math.random() - 0.5).join('');
 }
+
+function newGame() {
+    currentWord = words[Math.floor(Math.random() * words.length)];
+    scrambledWord = scramble(currentWord);
+    document.getElementById("scrambled").innerText = scrambledWord;
+    document.getElementById("answer").value = "";
+    document.getElementById("result").innerText = "";
+}
+
+function checkAnswer() {
+    let user = document.getElementById("answer").value.toUpperCase();
+    if (user === currentWord) {
+        document.getElementById("result").innerHTML = "✔ Benar!";
+        document.getElementById("result").className = "correct";
+        setTimeout(newGame, 1500);
+    } else {
+        document.getElementById("result").innerHTML = "❌ Coba lagi!";
+        document.getElementById("result").className = "wrong";
+    }
+}
+
+// mulai game pertama
+newGame();
 </script>
 
 </body>
